@@ -42,8 +42,8 @@ class Engine:
     avatar_image = None
     clock = None
     enable_logging = True
-    # array of Sprite objects to be rendered
-    sprites = {}
+    # dict of entity objects to be rendered
+    entities = {}
 
     def __init__(self):
         pygame.init()
@@ -57,7 +57,7 @@ class Engine:
         random.seed()
 
     def game_loop(self):
-        self.init_sprites()
+        self.init_entities()
 
         program_loop = True
         while program_loop:
@@ -76,31 +76,31 @@ class Engine:
                 for event in pygame.event.get():
                     self.process_game_event(event)
 
-            # set background before rendering sprites
+            # set background before rendering entities
             self.set_background()
 
-            # events have updated the sprite objects, we can render them now
-            for i, sprite in self.sprites.items():
-                self.display.blit(sprite.get_image(), sprite.get_pos(delta_t))
+            # events have updated the entity objects, we can render them now
+            for i, entity in self.entities.items():
+                self.display.blit(entity.get_image(), entity.get_pos(delta_t))
 
             pygame.display.flip()
             self.clock.tick(settings['fps'])
         self.main_menu()
 
-    def init_sprites(self):
+    def init_entities(self):
         spaceship1 = YellowSpaceship((400, 300))
         thing = pygame.image.load(spaceship1.get_image_path())
         image = pygame.transform.scale(thing, (40, 40))
         spaceship1.set_image(image)
-        # add to sprites, will be rendered on first iteration
-        self.sprites['spaceship'] = spaceship1
+        # add to entities, will be rendered on first iteration
+        self.entities['spaceship'] = spaceship1
 
     def process_game_event(self, event):
         if EngineEvent.is_exit_game(event):
             self.exit_game()
 
         if EngineEvent.is_mouse_l(event):
-            self.sprites['spaceship'].move_to(event.pos)
+            self.entities['spaceship'].move_to(event.pos)
 
     def set_background(self):
         if self.background is None:

@@ -1,3 +1,8 @@
 .DS_Store
 */.DS_Store
-/.idea/
+.idea/
+*.pyo
+*.pyc
+venv/
+__pycache__/
+*.py[cod]
