@@ -57,8 +57,9 @@ class Engine:
         random.seed()
 
     def game_loop(self):
-
         self.init_entities()
+
+        self.init_sounds()
 
         program_loop = True
         while program_loop:
@@ -91,6 +92,19 @@ class Engine:
         spaceship1.set_image(image)
         # add to entities, will be rendered on first iteration
         self.entities['spaceship'] = spaceship1
+
+    def init_sounds(self):
+        # sounds
+        # if 'win' in sys.platform:
+        #     soundExt = '.wav'
+        # else:
+        #     soundExt = '.ogg'
+        # SOUNDS['die'] = pygame.mixer.Sound('assets/audio/die' + soundExt)
+        # SOUNDS['hit'] = pygame.mixer.Sound('assets/audio/hit' + soundExt)
+        # SOUNDS['point'] = pygame.mixer.Sound('assets/audio/point' + soundExt)
+        # SOUNDS['swoosh'] = pygame.mixer.Sound('assets/audio/swoosh' + soundExt)
+        # SOUNDS['wing'] = pygame.mixer.Sound('assets/audio/wing' + soundExt)
+        pass
 
     def process_game_event(self, event):
         if EngineEvent.is_exit_game(event):

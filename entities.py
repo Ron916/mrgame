@@ -1,5 +1,6 @@
 from pygame import math, rect
 
+
 class BaseEntity(object):
     STATE_STOPPED = 'stopped'
     STATE_MOVING = 'moving'
