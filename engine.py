@@ -57,16 +57,13 @@ class Engine:
         random.seed()
 
     def game_loop(self):
+
         self.init_entities()
 
         program_loop = True
         while program_loop:
             # how much time has passed since the last iteration
             delta_t = self.clock.get_time()
-
-            # todo: need to better limit the length of the float number
-            # if delta_t > 0.15:
-            #     delta_t = 0.15
 
             # read events and process accordingly
             # we should probably whitelist pygame events, so that we don't clutter the event queue
@@ -89,8 +86,8 @@ class Engine:
 
     def init_entities(self):
         spaceship1 = YellowSpaceship((400, 300))
-        thing = pygame.image.load(spaceship1.get_image_path())
-        image = pygame.transform.scale(thing, (40, 40))
+        image = pygame.image.load(spaceship1.get_image_path())
+        image = pygame.transform.scale(image, (40, 40))
         spaceship1.set_image(image)
         # add to entities, will be rendered on first iteration
         self.entities['spaceship'] = spaceship1

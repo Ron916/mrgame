@@ -1,31 +1,26 @@
-from pygame import math
-
+from pygame import math, rect
 
 class BaseEntity(object):
     STATE_STOPPED = 'stopped'
     STATE_MOVING = 'moving'
 
+    mass = 1
     image_path = None
-    movement_path = []
     image = None
+    destination = None
     speed = 0
-    angle = 0
     position = None
-    delta_time = 0
     state = STATE_STOPPED
 
-    def __init__(self, pos, velocity=(0, 0)):
-        self.position = pos
+    def __init__(self, position, velocity=(0, 0)):
+        self.position = math.Vector2(position[0], position[1])
         self.velocity = math.Vector2(velocity[0], velocity[1])
         self.gravity = math.Vector2(0, 0)
-
-    def set_delta_time(self, delta_time):
-        self.delta_time = delta_time
 
     def get_pos(self, delta_time):
         raise NotImplementedError
 
-    # this class is not interested in the image format,
+    # this object is not interested in the image format,
     # but simply is storing the image for the engine to access as needed
     def set_image(self, image):
         self.image = image
@@ -35,64 +30,38 @@ class BaseEntity(object):
             raise RuntimeError('Must set_image() before using get_image()')
         return self.image
 
-    # def attack(self, attack_pos):
-    #     raise NotImplementedError
-
-    def stop(self):
-        self.speed = 0
-
     def get_image_path(self):
         return self.image_path
 
-    def move_to(self, destination_pos):
+    def move_to(self, destination):
         self.state = self.STATE_MOVING
         self.speed = 5
-
-
-        destination_vector = Vector(destination_pos)
-
-        self.position = self.position + self.velocity * self.delta_time
-        self.velocity = self.velocity + self.gravity * self.delta_time
-
-        # build path from current location to destination
-        current_vector = self.movement_path.pop(1)
-        # need to find ratio of height to width of our
-
-        # x_movement = abs(current_pos[0] - destination_pos[0])
-        # y_movement = abs(current_pos[1] - destination_pos[0])
-
-        # new_movement_path = [current_pos]
-        # while True:
-        #     current_pos[0] += int(x_lcd)
-        #     current_pos[1] += int(y_lcd)
-        #     new_movement_path.append(current_pos)
+        self.destination = destination
 
 
 class BaseSpaceship(BaseEntity):
+    hover_path = []
+
     def get_pos(self, delta_time):
-        self.delta_time = delta_time
-
         if self.state == self.STATE_MOVING:
-            pass
-
+            self.position = self.position + self.velocity * delta_time
+            self.velocity = self.velocity + self.gravity * delta_time
+        if self.state == self.STATE_STOPPED:
+            self.position = self.get_hover_pos()
         return self.position
 
-    def stop(self):
-        self.stop()
-        self.hover()
-
-    def hover(self):
-        # ideally we'll use the move_to method to just move up and down
-        # we'll deviate 7 pixels up and down to hover
+    def get_hover_pos(self):
         hover_matrix = [
             0, 1, 2, 3, 4, 5, 6, 7, 6, 5, 4, 3, 2, 1,
             0, -1, -2, -3, -4, -5, -6, -7, -6, -5, -4, -3, -2, -1
         ]
-        for modifier in hover_matrix:
-            self.movement_path.append((
-                self.position[0],
-                self.position[1] + modifier,
-            ))
+        if len(self.hover_path) == 0:
+            for modifier in hover_matrix:
+                self.hover_path.append((
+                    self.position[0],
+                    self.position[1] + modifier,
+                ))
+        return self.hover_path.pop()
 
 
 class YellowSpaceship(BaseSpaceship):
